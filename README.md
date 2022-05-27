@@ -11,8 +11,7 @@ L'objectif de ce projet a été d'implémenter des algorithmes de détection des
 
 Tous les scripts Python codés dans le cadre de ce projet son situés dans le dossier src > projet_CS
 
-## Prerequisites
-
+## Getting started
 
 Type the command <git clone https://github.com/louislhotte/Projet-Epilepsie.git > into your interface 
 
@@ -45,60 +44,25 @@ You can install them in a virtual environment on your machine via the command :
     $ pip install -r requirements.txt
 ```
 
-## Getting started
+## Explanation of how the differents algorithms work
 
-### Setting up environment and launch docker-compose
-After cloning this repository, replace the value of the environment variable ```DATA_PATH``` in the *env.sh* file with the absolute path of the data you are working with.
+### Fisher
+How does Fisher's algorithm work ?
+Fisher is based on the values of RR interval lengths, that allow to calculate mean heart rate. 
+Two different means are calculated : 
+* a "background" HR mean, calculated by averaging the HR of the patient on a "large window", of length 5 min by default.
+* a "leading" HR mean, calculated by averaging the HR of the patient on a "short window", of length 10 sec by default.
+We calculate then (leading HR mean)/(bckg HR mean) and if the value is superior to the threshold, we consider that a seizure is detected. This very simple algorithm has already been used in the VNS Therapy System.
 
-You can now run these commands :
+### Jeppesen
+How does Jeppesen's algorithm work ?
+Jeppesen is based on features, which are calculated from the values of RR interval lengths. For example, the mean value of all RR interval lengths would be a feature (a bad feature, but still a feature). 
+Let's stay we choose a sliding window of a 100 RR intervals : that means, for each new RR interval, we will calculate the value of the feature we chose on the last 100 RR intervals. That will give us a time-dependent value of this feature.
+Now, we have to define thresholds for our features. Here, they will be recalculated for each new recording. In reality, we only need to calculate them once for each patient.
+This threshold will be 1.05*(Max value of the feature on a period without seizures). For pragmatic and scientific reasons, on this dataset, we chose to calculate this threshold on the following period : from the beginning of the recording until 1 minute before the first seizure.
+A seizure is detected if the value of the feature overlaps the threshold. To avoid detecting a single seizure more than once, the system can't detect a new seizure for the next 3 minutes.
 
-```sh
-    $ source setup_env.sh
-    $ docker-compose build
-    $ docker-compose up airflow-init
-    $ docker-compose up -d
-```
-**Warning**: Here are the default ports used by the different services. If one of them is already in use on your machine, change the value of the corresponding environment variables in the *env.sh* file before running the commands above.
-| Service   | Default port |
-|:---------:|:------------:|
-|Postgresql|5432|
-|InfluxDB|8086|
-|Airflow|8080|
-|Grafana|3000|
-|MLFlow|5000|
-|Great expectations (via NGINX)|8082|
-|Flower|5555|
-|Redis|6379|
-
-
-
-### UI
-Once the services are up, you can interact with their UI :
-* **Airflow** : [http://localhost:8080](http://localhost:8080)
-* **Grafana** : [http://localhost:3000](http://localhost:3000)
-* **MLFlow** : [http://localhost:5000](http://localhost:5000)
-* **Great expectations** : [http://localhost:8082](http://localhost:8082)
-* **Flower** : [http://localhost:5555](http://localhost:5555)
-
-When required, usernames and passwords are *admin*. 
-
-### Executing script separately
-First export the python path to access the scripts :
-```sh
-    $ export PYTHONPATH=$(pwd)
-```
-You can now execute each Python script separately by running :
-```sh
-    $ python3 <path-to-Python-script> [OPTIONS]
-```
-The required options are shown by running the `--help` option.
-
-### Setting down the environment
-You can stop all services by running : 
-```sh
-    $ docker-compose down 
-```
-If you add the `-v` option, all services' persistent data will be erased.
+### Vandercasteele
 
 
 ## Specific scripts of this project
@@ -108,7 +72,7 @@ The dataset that you'll use needs to be preprocessed : as the algorithms only wo
 
 ### Executing Fisher on a rr_file 
 
-/!\ The sample needs to have a length of at least 5 minutes !!
+/!\ The sample need to have a length longer as the LARGE_WINDOW you choose !!
 
 You can directly execute Fisher algorithm on a rr_file. The result will be the form of a output.json file (with the same format as the annotations) that you can find in the detection_algorithms folder. You can also change several parameters of the Fisher algorithm, such as the length of the long and short windows (in ms), the value of threshold (1.4 = 40% of threshold), the begininng and the end of the part of the sample on which you want to execute Fisher.
 
@@ -119,13 +83,6 @@ For example :
 ```
 
 ### Executing Jeppesen on a rr_file 
-
-How does Jeppesen's algorithm work ?
-Jeppesen is based on features, which are calculated from the values of RR interval lengths. For example, the mean value of all RR interval lengths would be a feature (a bad feature, but still a feature). 
-Let's stay we choose a sliding window of a 100 RR intervals : that means, for each new RR interval, we will calculate the value of the feature we chose on the last 100 RR intervals. That will give us a time-dependent value of this feature.
-Now, we have to define thresholds for our features. Here, they will be recalculated for each new recording. In reality, we only need to calculate them once for each patient.
-This threshold will be 1.05*(Max value of the feature on a period without seizures). For pragmatic and scientific reasons, on this dataset, we chose to calculate this threshold on the following period : from the beginning of the recording until 1 minute before the first seizure.
-A seizure is detected if the value of the feature overlaps the threshold. To avoid detecting a single seizure more than once, the system can't detect a new seizure for the next 3 minutes.
 
 How to use Jeppesen's algorithm :
 As Jeppesen is based on features, first step is to choose a feature, for example 'csi'
@@ -170,13 +127,14 @@ python3 src/Projet_CS/detection_algorithms/vandercasteele.py --csv_path 'csv_pat
  
 ### Evaluate a dataset
 
-You can directly evaluate one algorithm on a dataset made up of folders for each patient with rr_files (rr_patient_number_sample_id.json) and annotations  (patient_number_sample_id.json)
+You can directly evaluate one algorithm on a dataset made up of folders for each patient with rr_files (rr_patient_number_sample_id.json) and annotations  (patient_number_sample_id.json). If you want to evaluate Fisher, the samples need to be longer than the LARGE_WINDOW you choose.
 
 ```sh
     $ python3 src/projet_CS/evaluate.py --db-path <path-to-the-database-to-evaluate> --algorithm <algorithm-to-evaluate-'fisher'-'jeppesen'-'vandercasteele'> --jeppesen-feature-name <name-of-the-jeppesen-feature-to-evaluate>
 ```
 
 The results of the evaluation will be displayed on your screen, and then saved in the folder "models_evaluation".
+
 
 ## The team
 
