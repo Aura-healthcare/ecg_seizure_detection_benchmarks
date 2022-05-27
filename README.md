@@ -70,6 +70,12 @@ A seizure is detected if the value of the feature overlaps the threshold. To avo
 ### Format of the data in input & output 
 The dataset that you'll use needs to be preprocessed : as the algorithms only work on samples under the format of .csv files with rr_intervals (columns format :  ) with their annotation in a .json file, the original .edf samples and annotations have to go through a preprocess pipeline. You can for instance use Aura's pipeline with the script 1_detect_qrs_wrapper.sh.
 
+Example of a rr .csv file :
+<img src="https://github.com/Aura-healthcare/ecg_seizure_detection_benchmarks/tree/main/Images/screenshot_rrintervals.png"/>
+
+Example of an annotation .json file :
+<img src="https://github.com/Aura-healthcare/ecg_seizure_detection_benchmarks/tree/main/Images/screenshot_json.png"/>
+
 ### Executing Fisher on a rr_file 
 
 /!\ The sample need to have a length longer as the LARGE_WINDOW you choose !!
