@@ -1,6 +1,6 @@
 # ecg_seizure_detection_benchmarks
 
-Ce github est celui du projet P1.01 du pôle IA de CentraleSupélec, réalisé avec l'association Aura. Sa structure se base sur celle du Github principal d'Aura.
+Ce github est celui du projet P1.01 du pôle IA de CentraleSupélec, réalisé avec l'association Aura.
 L'objectif de ce projet a été d'implémenter des algorithmes de détection des crises d'épilepsie décrits comme performants dans la littérature, puis d'évaluer leurs performances afin de pouvoir comparer leur efficacité.
 
 3 algorithmes ont été implémentés :
