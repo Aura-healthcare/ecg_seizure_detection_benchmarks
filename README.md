@@ -131,6 +131,11 @@ python3 src/Projet_CS/detection_algorithms/vandercasteele.py --csv_path 'csv_pat
  
  WARNING : do not train and evaluate vandercasteele at the same time. 
  
+The current availaible features : ['timestamp','mean_nni','sdnn','sdsd','nni_50', 'pnni_50','nni_20','pnni_20','rmssd','median_nni','range_nni','cvsd','cvnni','mean_hr','max_hr','min_hr',
+'std_hr','lf','hf','lf_hf_ratio','lfnu','hfnu','total_power','vlf','csi','cvi','Modified_csi','sd1','sd2','ratio_sd2_sd1', 'Modified_csi*Slope','csi*Slope']
+
+To get more details about them, you can check Aura's module hrvanalysis online or check the function 'get_custom_features' in the file 'custom_features.py' in the folder 'Jeppesen'.
+ 
 ### Evaluate a dataset
 
 You can directly evaluate one algorithm on a dataset made up of folders for each patient with rr_files (rr_patient_number_sample_id.json) and annotations  (patient_number_sample_id.json). If you want to evaluate Fisher, the samples need to be longer than the LARGE_WINDOW you choose.
