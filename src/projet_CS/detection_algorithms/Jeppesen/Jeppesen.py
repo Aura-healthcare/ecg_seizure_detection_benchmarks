@@ -383,7 +383,7 @@ def jeppesen(enregistrement_path, json_path, feature_name ,sliding_window=100):
         outfile.write(json_object)
     return background,seizures
 
-print(jeppesen("C:/Users/thibault/Documents/CS 1A/Pôle projet IA/Github P25/Projet-Epilepsie/database_processed/train/00001006/rr_00001006_s001_t001.csv","C:/Users/thibault/Documents/CS 1A/Pôle projet IA/Github P25/Projet-Epilepsie/database_processed/train/00001006/00001006_s001_t001.json",'Modified_csi*Slope'))
+
 
 def convert_args_to_dict(args: argparse.Namespace) -> dict:
     """
