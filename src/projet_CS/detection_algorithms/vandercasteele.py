@@ -21,7 +21,6 @@ from sklearn import preprocessing
 import argparse
 
 
-#path = sys.argv[1]
 
 
 def convert(fichierCSV):  # plus ou moins vérifiée et fonctionelle
@@ -64,8 +63,6 @@ def flatten(array):
                 (array[i-7:i+8, 1])), array[i][2]])
     return np.array(res)
 
-#flattened=flatten(ECG)
-# print(flattened)
 
 
 def calculate_gradient(array):
@@ -80,14 +77,6 @@ def calculate_gradient(array):
                 array[i-9:i+1, 0:2]).slope*1000])
     return np.array(res)
 
-'''
-gradient=calculate_gradient(flattened)
-plt.plot(gradient[:,0]/1000,gradient[:,1])
-cropped_array=ECG[len(ECG)-len(gradient):,:]
-cropped_flattened=flattened[len(flattened)-len(gradient):,:]
-plt.plot(cropped_array[:,0]/1000,cropped_array[:,1])
-plt.plot(cropped_flattened[:,0]/1000,cropped_flattened[:,1])
-plt.show()'''
 
 
 def calculate_HRbase(array, t_start):
@@ -187,13 +176,7 @@ def hri_extract(array,total=False):
         i+=1
         
     return L
-            #check ou appel fonction delta_HRrest
-#features=hri_extract(ECG)[0]
 
-    # check ou appel fonction delta_HRrest
-#features = hri_extract(ECG)[0]
-
-# L.append([features])
 
 def calculate_F_beta(beta, Se, PPV):
     """
@@ -297,9 +280,6 @@ def classifier_manuel(HRI_features, jsonfile):
         else:
             return (0,i)
 
-#print(hri_extract(convert(path),True))
-#print(classifier_manuel(feats,'C:/Users/Maxime/Desktop/Pole_IA_Epilepsie/Projet-Epilepsie/database_processed/dev/00008544/00008544_s004_t008.json'))
-
 
 def get_real_hri(array):
     pass
@@ -315,10 +295,6 @@ def annot_bdd(csv, jsonfile):
     features_list = GET_FOUR_FEATS(features_list_all)
     for features in features_list_all:
         seizs.append(classifier_manuel(features, jsonfile))
-
-    # print(len(features_list),len(seizs))
-    
-
 
     return features_list, true_seizs(features_list,seizs)
 
@@ -480,8 +456,6 @@ def vandercasteele(csv_path):
         json_object = json.dumps(dico)
         outfile.write(json_object)
 
-#vandercasteele(sys.argv[1])
-#DB_PATH_TRAIN='C:/Users/Maxime/Desktop/Pole_IA_Epilepsie/Projet-Epilepsie/database_processed_clean'
 def full_code_to_train_svm(DB_PATH_TRAIN):
 
     global classifier
@@ -498,7 +472,6 @@ def full_code_to_train_svm(DB_PATH_TRAIN):
     save_scaler()
     return classifier,std_scale
 
-#full_code_to_train_svm(DB_PATH)
 
 def convert_args_to_dict(args: argparse.Namespace) -> dict:
     """
