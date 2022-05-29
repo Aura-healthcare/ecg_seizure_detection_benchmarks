@@ -250,11 +250,9 @@ def parse_evaluate_args(
     return args
 
 
-fisher('../database_processed_clean/00001006/rr_00001006_s001_t001.csv')
 
-"""
 if __name__ == "__main__":
     args = parse_evaluate_args(sys.argv[1:])
     args_dict = convert_args_to_dict(args)
     fisher(**args_dict)
-"""
+
